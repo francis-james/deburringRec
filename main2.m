@@ -6,7 +6,7 @@ close all;
 % for file=files'
 %     name=strcat('data/labview/',file.name);
 % end
-name='data/labview/obj1_sub1_edge12_pass1_labview.csv';
+name='data/labview/obj1_sub3_edge5_pass2_labview_11_26_23_26_05_2016.csv';
 M=csvread(name);
 if str2num(name(22))>2
     rectfile='rectangle2.csv';
