@@ -4,11 +4,14 @@ files=dir('data/labview/*.csv');
 counter=1;
 for file=files'
     name=strcat('data/labview/',file.name)
+    if str2num(name(28))>4 && str2num(name(28))<9
+        continue;
+    end
 %     name='data/labview/obj1_sub1_edge2_pass1_labview.csv';
     [debFx,debFy,debFz,t,d, debCenter, debRad, debEnd, debX1, debY1, debZ1, ...
     debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H]=processData(name);
-    animateDeburring(debFx,debFy,debFz,t, debCenter, debRad, debEnd, debX1, debY1, debZ1, ...
-    debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H);
+%     animateDeburring(debFx,debFy,debFz,t, debCenter, debRad, debEnd, debX1, debY1, debZ1, ...
+%     debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H);
     h=figure();
     hfig=figure('Name',name);
     hax=axes('Parent',hfig);
