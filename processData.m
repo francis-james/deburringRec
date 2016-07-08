@@ -3,7 +3,7 @@ function [debFx,debFy,debFz,t, d,debCenter, debRad, debEnd, debX1, debY1, debZ1,
     debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H]=processData(name)
     M=csvread(name);
     if str2num(name(22))>2
-        rectfile='rectangle2.csv';
+        rectfile=plot(tRe,smooth(debFz,10));'rectangle2.csv';
     else
         rectfile='rectangle1.csv';
     end

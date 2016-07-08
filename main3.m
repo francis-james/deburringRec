@@ -4,7 +4,7 @@ files=dir('data/labview/*.csv');
 counter=1;
 for file=files'
     name=strcat('data/labview/',file.name)
-    if str2num(name(28))>4 && str2num(name(28))<9
+    if str2num(name(28))>4 && str2num(name(28))<9   %change this to toggle between horizontal and vertical edges
         continue;
     end
 %     name='data/labview/obj1_sub1_edge2_pass1_labview.csv';
