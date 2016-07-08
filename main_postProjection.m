@@ -1,6 +1,6 @@
 %% File to process data
 clear all;
-load('horizontalData.mat');
+load('horizontalData2.mat');
 [m,n]=size(collatedd);
 tfinal=[];
 debFzfinal=[];
