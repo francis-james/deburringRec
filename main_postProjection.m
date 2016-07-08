@@ -8,7 +8,7 @@ debFyfinal=[];
 debFxfinal=[];
 passno=1;
 subject=4;
-figure();
+h=figure();
 tdes=0:0.005:1;
 Fmag=[];
 %% To store data in different rows corresponding to different passes
@@ -88,6 +88,8 @@ for i=1:n
         end
     end
 end
+title(strcat('Force Magnitude: Subject ',num2str(subject)));
+print(h,strcat('resultPlots/sub',num2str(subject),'Forces'),'-dpng');
 
 %% Average forces for whatever is kept constant (subject and pass no. for horizontal edges only for instance)
 [m,n]=size(Fmag);
@@ -97,7 +99,7 @@ S=std(Fmag);
 % 95% confidence interval
 upperLt=forceAveraged+1.96*S/sqrt(n);
 lowerLt=forceAveraged-1.96*S/sqrt(n);
-figure();
+h=figure();
 xvals=[tdes,fliplr(tdes)];
 yvals=[upperLt,fliplr(lowerLt)];
 fill(xvals,yvals,'b');
@@ -105,6 +107,8 @@ hold on;
 plot(tdes,forceAveraged);
 plot(tdes,upperLt);
 plot(tdes,lowerLt);
+title(strcat('Average forces with confidence intervals for Subject',num2str(subject)));
+print(h,strcat('resultPlots/sub',num2str(subject),'AverageForcesWithCI'),'-dpng');
 
 
 [m,n]=size(Fmag);
@@ -112,11 +116,14 @@ forceAveragedMean=mean(forceAveraged)
 for i=1:m
     forceNormalized(i,:)=Fmag(i,:)/forceAveragedMean;
 end
-figure();
+h=figure();
 plot(tdes,forceNormalized);
+title(strcat('Normalized forces for suject',num2str(subject)));
+print(h,strcat('resultPlots/sub',num2str(subject),'NormalizedForces'),'-dpng');
 forceNormalizedAveraged=mean(forceNormalized);
 S2=std(forceNormalizedAveraged);
 upperLtNormalized=forceNormalizedAveraged+1.96*S2/sqrt(n);
 lowerLtNormalized=forceNormalizedAveraged-1.96*S2/sqrt(n);
 savename=strcat('horizontal_sub',num2str(subject));
+clear('h');
 save(savename);

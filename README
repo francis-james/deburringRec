@@ -1,1 +1,6 @@
 Deburring matlab codes
+
+Run main3 to process all labview files from the data/labview folder and store plots
+Run main2 to look at animations and data from individual files
+Run main_postProjection to look at user data
+Run plotTogether to plot normalized forces from multiplr subjects on the same graph

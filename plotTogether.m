@@ -11,6 +11,7 @@ plot(tdes,sub2.forceNormalizedAveraged, 'DisplayName','sub2');
 plot(tdes,sub3.forceNormalizedAveraged, 'DisplayName','sub3');
 plot(tdes,sub4.forceNormalizedAveraged, 'DisplayName','sub4');
 legend('-DynamicLegend');
+title('Normalized forces');
 
 figure();
 xvals=[sub1.tdes,fliplr(sub1.tdes)];
@@ -32,3 +33,4 @@ plot(tdes,sub2.forceNormalizedAveraged, 'DisplayName','sub2');
 plot(tdes,sub3.forceNormalizedAveraged, 'DisplayName','sub3');
 plot(tdes,sub4.forceNormalizedAveraged, 'DisplayName','sub4');
 legend('-DynamicLegend');
+title('Normalized forces with 95% confidence intervals');
