@@ -1,9 +1,9 @@
 %% Function that reads the csv file, recreates the geometry (center of circle, offset length along normal to circle) and does parametrization
 function [debFx,debFy,debFz,t, d,debCenter, debRad, debEnd, debX1, debY1, debZ1, ...
-    debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H]=processData(name)
+    debX2, debY2, debZ2, debX3, debY3, debZ3,debTime,debVelMag,A,B,C,D,E,F,G,H]=processData(name)
     M=csvread(name);
     if str2num(name(22))>2
-        rectfile=plot(tRe,smooth(debFz,10));'rectangle2.csv';
+        rectfile='rectangle2.csv';
     else
         rectfile='rectangle1.csv';
     end
@@ -11,6 +11,8 @@ function [debFx,debFy,debFz,t, d,debCenter, debRad, debEnd, debX1, debY1, debZ1,
 
     %%linept on line42
     sign=-1;
+
+time=M(:,2);
 
 x1=M(:,9);
 y1=M(:,18);
@@ -273,6 +275,8 @@ for i=1:length(segmentedData(segmentDeburring,:))
     debX3(i)=x3(segmentedData(segmentDeburring,i));
     debY3(i)=y2(segmentedData(segmentDeburring,i));
     debZ3(i)=z3(segmentedData(segmentDeburring,i));
+    debTime(i)=time(segmentedData(segmentDeburring,i));
+    
     if i==1
         t1=(dot((debEnd(:,i)-linept1),(linept2-linept1))/dot((linept1-linept2),(linept1-linept2)));
         Q=linept1+t1*(linept2-linept1);
@@ -327,3 +331,12 @@ for i=1:n
     %res-Q
     d(i)=norm(Q-debEnd(:,i));
 end
+
+%% compute velocitiesfrom debEnd and debTime
+%debEnd is 3 X n matrix where n is number of time steps, debTime is 1 X n
+[m,n]=size(debFx);
+
+for i=2:n
+    debVelMag(:,i)=norm((debEnd(:,i)-debEnd(:,i-1))/(debTime(i)-debTime(i-1)))*10^3;
+end
+debVelMag(1)=debVelMag(2);

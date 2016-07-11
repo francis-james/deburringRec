@@ -6,7 +6,8 @@ close all;
 % for file=files'
 %     name=strcat('data/labview/',file.name);
 % end
-name='data/labview/obj1_sub1_edge1_pass2_labview.csv';
+name='data/labview/obj3_sub4_edge1_pass1_labview_07_53_13_27_05_2016.csv';
+v = VideoWriter('deburring4.avi');
 M=csvread(name);
 if str2num(name(22))>2
     rectfile='rectangle2.csv';
@@ -268,6 +269,7 @@ for i=1:length(segmentedData(segmentDeburring,:))
     debCenter(:,i)=center2(:,segmentedData(segmentDeburring,i));
     debRad(i)=rad(segmentedData(segmentDeburring,i));
     debEnd(:,i)=(debCenter(:,i)+sign*53.49*10^-3*nv2(:,segmentedData(segmentDeburring,i)));
+    debNormal(:,i)=nv2(:,segmentedData(segmentDeburring,i));
     debFx(i)=Fx(segmentedData(segmentDeburring,i));
     debFy(i)=Fy(segmentedData(segmentDeburring,i));
     debFz(i)=Fz(segmentedData(segmentDeburring,i));
@@ -314,8 +316,9 @@ end
  
 
 %% Project onto line paramterized in terms of 't'
-
-figure()
+v.FrameRate=15;
+open(v);
+a=figure();
 [m,n]=size(debCenter);
 for i=1:length(debRad)
     pts=[debCenter(:,i).';debEnd(:,i).'];
@@ -324,6 +327,7 @@ for i=1:length(debRad)
     pts4=[G.';E.';F.';H.';G.'];
     pts5=[E.';A.';C.';G.';E.'];
     pts6=[F.';B.';D.';H.';F.'];
+    figure(a);
     plot3(pts(:,1), pts(:,2), pts(:,3));
     hold on;
     %plot3(pts4(:,1), pts4(:,2), pts4(:,3));
@@ -332,11 +336,14 @@ for i=1:length(debRad)
     fill3(pts5(:,1),pts5(:,2),pts5(:,3),'g');
     fill3(pts6(:,1),pts6(:,2),pts6(:,3),'g');
     plot3(pts3(:,1),pts3(:,2),pts3(:,3),'b*');
-    plot3(debX1(i),debY1(i),debZ1(i),'r*');
-    plot3(debX2(i),debY2(i),debZ2(i),'r*');
-    plot3(debX3(i),debY3(i),debZ3(i),'r*');
+%     plot3(debX1(i),debY1(i),debZ1(i),'r*');
+%     plot3(debX2(i),debY2(i),debZ2(i),'r*');
+%     plot3(debX3(i),debY3(i),debZ3(i),'r*');
     pts7=[debX1(i), debY1(i),debZ1(i);debX2(i),debY2(i),debZ2(i);debX3(i),debY3(i),debZ3(i)];
-    fill3(pts7(:,1),pts7(:,2),pts7(:,3),'r');
+    
+%     fill3(pts7(:,1),pts7(:,2),pts7(:,3),'r');
+    points=getCircle3DPoints(debEnd(:,i).',debNormal(:,i).',0.02);
+    plot3(points(1,:),points(2,:),points(3,:),'r-');
     plot3(debCenter(1,i),debCenter(2,i),debCenter(3,i),'g*');
     text(A(1),A(2),A(3),'A');
     text(B(1),B(2),B(3),'B');
@@ -349,10 +356,13 @@ for i=1:length(debRad)
     %axis([0.1 0.4 -0.25 0 -0.25 0.5]);
     axis('equal');
     pause(0.05);
+    frame=getframe;
+    writeVideo(v,frame);
     hold off;
     
     
 end
+close(v);
 
 %debEnd2=cell2mat(debEnd);
 
@@ -380,7 +390,8 @@ for i=1:n
 end
 
 figure()
-plot(d)
+plot(d,'DisplayName','distance')
 hold on
-plot(debFx)
-plot(t)
+plot(debFx,'DisplayName','Fx')
+plot(t,'DisplayName','parameter t')
+legend('show');

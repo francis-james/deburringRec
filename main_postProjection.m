@@ -1,11 +1,12 @@
 %% File to process data
 clear all;
-load('horizontalData2.mat');
+load('horizontalData3.mat');
 [m,n]=size(collatedd);
 tfinal=[];
 debFzfinal=[];
 debFyfinal=[];
 debFxfinal=[];
+timeFinal=[];
 passno=1;
 subject=4;
 h=figure();
@@ -18,6 +19,9 @@ for i=1:n
     debFx=collateddebFx{i};
     debFy=collateddebFy{i};
     debFz=collateddebFz{i};
+    debVel=collatedVelMag{i};
+    time=collatedTime{i};
+%    time=collatedTime{i};
     pt1=min(t);
     pt2=max(t);
     tRe=[];
@@ -35,17 +39,18 @@ for i=1:n
         if (str2num(nameStr(28))==3 || str2num(nameStr(28))==9) %&& str2num(nameStr(34))==passno
             tfinal=[tfinal, tRe];
             %length(tfinal)
-            debFxfinal=[debFxfinal,abs(debFx)];
-            debFyfinal=[debFyfinal,abs(debFy)];
-            debFzfinal=[debFzfinal,abs(debFz)];
+%             debFxfinal=[debFxfinal;abs(debFx).'];
+%             debFyfinal=[debFyfinal;abs(debFy).'];
+%             debFzfinal=[debFzfinal;abs(debFz).'];
             debFxInterp(i,:)=interp1(tRe, smooth(debFx,10),tdes);
             debFyInterp(i,:)=interp1(tRe, smooth(debFy,10),tdes);
             debFzInterp(i,:)=interp1(tRe, smooth(debFz,10),tdes);
+            debVelMagInterp(i,:)=interp1(tRe,smooth(debVel,10),tdes);
             a=sqrt(debFxInterp.^2+debFyInterp.^2+debFzInterp.^2);
             plot(tdes,a(end,:),'DisplayName',nameStr(28));
             hold on;
             hold all;
-            legend('-DynamicLegend');
+            %legend('-DynamicLegend');
             Fmag=[Fmag;a(end,:)];
 %             plot(tdes,abs(debFzInterp(i,:)));
 %             plot(tRe,smooth(debFx,10));
@@ -53,17 +58,18 @@ for i=1:n
         elseif (str2num(nameStr(28))==1 && sum(isstrprop(nameStr(28:29),'digit'))~=2) %&& str2num(nameStr(34))==passno
             tfinal=[tfinal, tRe];
             %length(tfinal)
-            debFxfinal=[debFxfinal,abs(debFx)];
-            debFyfinal=[debFyfinal,abs(debFy)];
-            debFzfinal=[debFzfinal,abs(debFz)];
+%             debFxfinal=[debFxfinal,abs(debFx)];
+%             debFyfinal=[debFyfinal,abs(debFy)];
+%             debFzfinal=[debFzfinal,abs(debFz)];
             debFxInterp(i,:)=interp1(tRe, smooth(debFx,10),tdes);
             debFyInterp(i,:)=interp1(tRe, smooth(debFy,10),tdes);
             debFzInterp(i,:)=interp1(tRe, smooth(debFz,10),tdes);
+            debVelMagInterp(i,:)=interp1(tRe,smooth(debVel,10),tdes);
             a=sqrt(debFxInterp.^2+debFyInterp.^2+debFzInterp.^2);
             plot(tdes,a(end,:),'DisplayName',nameStr(28));
             hold on;
             hold all;
-            legend('-DynamicLegend');
+            %legend('-DynamicLegend');
             Fmag=[Fmag;a(end,:)];
 %             plot(tdes,abs(debFzInterp(i,:)));
 %             plot(tRe,smooth(debFx,10));
@@ -71,17 +77,18 @@ for i=1:n
         elseif sum(isstrprop(nameStr(28:29),'digit'))==2 && str2num(nameStr(28:29))==11 %&& str2num(nameStr(35))==passno
             tfinal=[tfinal, tRe];
             %length(tfinal)
-            debFxfinal=[debFxfinal,abs(debFx)];
-            debFyfinal=[debFyfinal,abs(debFy)];
-            debFzfinal=[debFzfinal,abs(debFz)];
+%             debFxfinal=[debFxfinal,abs(debFx)];
+%             debFyfinal=[debFyfinal,abs(debFy)];
+%             debFzfinal=[debFzfinal,abs(debFz)];
             debFxInterp(i,:)=interp1(tRe, smooth(debFx,10),tdes);
             debFyInterp(i,:)=interp1(tRe, smooth(debFy,10),tdes);
             debFzInterp(i,:)=interp1(tRe, smooth(debFz,10),tdes);
+            debVelMagInterp(i,:)=interp1(tRe,smooth(debVel,10),tdes);
             a=sqrt(debFxInterp.^2+debFyInterp.^2+debFzInterp.^2);
             plot(tdes,a(end,:),'DisplayName',nameStr(28:29));
             hold on;
             hold all;
-            legend('-DynamicLegend');
+            %legend('-DynamicLegend');
             Fmag=[Fmag;a(end,:)];
 %             plot(tdes,abs(debFzInterp(i,:)));
 %             plot(tRe,smooth(debFx,10));
@@ -112,7 +119,13 @@ print(h,strcat('resultPlots/sub',num2str(subject),'AverageForcesWithCI'),'-dpng'
 
 
 [m,n]=size(Fmag);
-forceAveragedMean=mean(forceAveraged)
+forNormalizing=[];
+for i=1:length(tdes)
+    if tdes(i)>0.6 && tdes(i)<0.9
+        forNormalizing=[forNormalizing,forceAveraged(i)];
+    end
+end
+forceAveragedMean=mean(forNormalizing);
 for i=1:m
     forceNormalized(i,:)=Fmag(i,:)/forceAveragedMean;
 end
@@ -124,6 +137,16 @@ forceNormalizedAveraged=mean(forceNormalized);
 S2=std(forceNormalizedAveraged);
 upperLtNormalized=forceNormalizedAveraged+1.96*S2/sqrt(n);
 lowerLtNormalized=forceNormalizedAveraged-1.96*S2/sqrt(n);
-savename=strcat('horizontal_sub',num2str(subject));
+savename=strcat('horizontal_sub_2_',num2str(subject));
 clear('h');
 save(savename);
+
+figure()
+[m,n]=size(debVelMagInterp);
+for i=1:m
+    a=plot(tdes,debVelMagInterp(i,:));
+    hold on;
+end
+velMean=trimmean(debVelMagInterp,10);
+figure()
+plot(tdes,velMean);

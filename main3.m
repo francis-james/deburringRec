@@ -9,10 +9,9 @@ for file=files'
     end
 %     name='data/labview/obj1_sub1_edge2_pass1_labview.csv';
     [debFx,debFy,debFz,t,d, debCenter, debRad, debEnd, debX1, debY1, debZ1, ...
-    debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H]=processData(name);
+    debX2, debY2, debZ2, debX3, debY3, debZ3,debTime,debVelMag,A,B,C,D,E,F,G,H]=processData(name);
 %     animateDeburring(debFx,debFy,debFz,t, debCenter, debRad, debEnd, debX1, debY1, debZ1, ...
 %     debX2, debY2, debZ2, debX3, debY3, debZ3,A,B,C,D,E,F,G,H);
-    h=figure();
     hfig=figure('Name',name);
     hax=axes('Parent',hfig);
     plot(hax,t);
@@ -21,8 +20,9 @@ for file=files'
     plot(hax,debFx);
     plot(hax,debFy);
     plot(hax,debFz);
+    plot(hax,debVelMag);
     name2=strcat(name(1:end-4),'.bmp');
-    legend('t','d','Fx','Fy','Fz');
+    legend('t','d','Fx','Fy','Fz','vel');
     saveas(hfig,name2);
     %pause()
     close all;
@@ -31,9 +31,14 @@ for file=files'
     collateddebFz{counter}=debFz;
     collatedt{counter}=t;
     collatedd{counter}=d;
+    collateddebEnd{counter}=debEnd;
     collatedName{counter}=cellstr(name(1:end-4));
+    collatedTime{counter}=debTime;
+    collatedVelMag{counter}=debVelMag;
     counter=counter+1;
+%     figure()
+%     plot(t,debVelMag);
     %break;
 end
 
-save('collatedData.mat');
+save('horizontalData3.mat');
